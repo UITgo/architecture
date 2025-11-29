@@ -1,91 +1,142 @@
 # UITGo - Hệ thống Gọi Xe
 
-## Giới thiệu
+## 1. Giới thiệu UITGo
 
-UITGo là một hệ thống gọi xe được xây dựng theo kiến trúc microservices, hỗ trợ các chức năng đặt chuyến, tìm tài xế gần nhất, và quản lý trạng thái tài xế theo thời gian thực.
+UITGo là một hệ thống gọi xe được xây dựng theo kiến trúc **microservices**, hỗ trợ các chức năng đặt chuyến, tìm tài xế gần nhất, và quản lý trạng thái tài xế theo thời gian thực. Hệ thống được thiết kế để scale theo region (HCM, HN) và tối ưu cho cả read-heavy và write-heavy workloads.
 
-**Module A** của đồ án tập trung vào các kỹ thuật nâng cao cho trip service và driver-stream:
+**Repo `architecture` này là "cửa chính" (entry point) của toàn bộ hệ thống UITGo.** Repo này chứa:
+- Tài liệu kiến trúc tổng thể (`ARCHITECTURE.md`)
+- Báo cáo chuyên sâu Module A (`REPORT.md`)
+- Architectural Decision Records (`ADR/`) - 18 quyết định thiết kế quan trọng
+- Bảng liệt kê và link tới tất cả các service/repo khác trong hệ thống
 
-- **trip-command-service**: Service xử lý các thao tác ghi (write) cho trip, áp dụng pattern CQRS
-- **trip-query-service**: Service xử lý các thao tác đọc (read) cho trip, sử dụng Redis cache để tối ưu hiệu năng
-- **driver-stream**: Service quản lý trạng thái và vị trí tài xế, sử dụng Redis Geo và Kafka, được shard theo region (HCM, HN)
-- **gateway-service**: API Gateway xử lý authentication và routing
-- **k6**: Load testing scripts để đánh giá hiệu năng
+Khi nộp bài, chỉ cần cung cấp link repo `architecture` này; các service còn lại đã được liệt kê và link trong README này.
 
-## Yêu cầu môi trường
+## 2. Kiến trúc tổng thể & danh sách service
 
-- **Node.js**: >= 20.x
-- **Go**: >= 1.22
-- **Docker**: >= 20.x
-- **Docker Compose**: >= 2.x
-- **k6**: >= 0.47.0 (để chạy load test)
+UITGo sử dụng kiến trúc **microservices** với các pattern:
+- **API Gateway Pattern**: Single entry point cho tất cả clients
+- **Database-per-Service**: Mỗi service có database riêng (PostgreSQL, MongoDB)
+- **CQRS**: Trip service tách thành command (write) và query (read)
+- **Event-Driven Architecture**: Kafka cho real-time event streaming
+- **Sharding**: Driver-stream được shard theo region (HCM, HN)
+- **Caching**: Redis cho read-heavy paths và Redis Geo cho spatial queries
 
-## Chạy trên môi trường local
+### Bảng liệt kê toàn bộ components
 
-### Bước 1: Clone repository
+| Component | Repo / Folder | Technology / Description |
+|-----------|---------------|--------------------------|
+| **API Gateway** | [`gateway-service`](../gateway-service) | NestJS, expose `/api/v1/*`, JWT authentication, request routing |
+| **Auth Service** | [`auth-service`](../auth-service) | NestJS, AWS Cognito integration, JWT token generation |
+| **User Service** | [`user-service`](../user-service) | NestJS + MongoDB, user profile management, gRPC service |
+| **Trip Command** | [`trip-service/trip-command-service`](../trip-service/trip-command-service) | NestJS + PostgreSQL, CQRS write side, region sharding |
+| **Trip Query** | [`trip-service/trip-query-service`](../trip-service/trip-query-service) | NestJS + PostgreSQL + Redis, CQRS read side, caching |
+| **Driver Stream** | [`driver-stream`](../driver-stream) | Go + Redis Geo + Kafka, driver location & status, trip assignment |
+| **Infrastructure** | [`infra`](../infra) | Docker Compose, k6 load testing scripts, infrastructure configs |
+| **Proto Contracts** | [`proto`](../proto) | gRPC/Protobuf definitions cho inter-service communication |
+| **IaC** | [`iac`](../iac) | Terraform/Bicep cho AWS infrastructure (nếu có) |
+| **Frontend User** | `fe-user` | Frontend cho passenger app (nếu có) |
+| **Frontend Driver** | `fe-driver` | Frontend cho driver app (nếu có) |
+| **Architecture Docs** | `architecture` (repo này) | Tài liệu: README, ARCHITECTURE.md, REPORT.md, ADR/ |
 
-Repository này chứa toàn bộ code Module A. Các service được tổ chức trong các thư mục:
+## 3. Tài liệu kiến trúc & báo cáo
 
+### [`ARCHITECTURE.md`](./ARCHITECTURE.md)
+Mô tả chi tiết kiến trúc hệ thống UITGo, bao gồm:
+- Kiến trúc tổng thể (microservices, communication patterns)
+- Kiến trúc Module A (trip flow, driver-stream flow, CQRS, sharding)
+- Technology stack và lý do lựa chọn
+- Database schema và data flow
+
+### [`REPORT.md`](./REPORT.md)
+Báo cáo chuyên sâu Module A (3-5 trang), bao gồm:
+- Phân tích kiến trúc hệ thống
+- In-depth analysis của Module A (CQRS, Redis cache, Redis Geo, sharding, k6)
+- Architectural decisions và trade-offs
+- Challenges và lessons learned
+- Results và future development
+
+### [`ADR/`](./ADR/)
+Thư mục chứa 18 Architectural Decision Records, mỗi ADR document một quyết định thiết kế quan trọng:
+
+- **ADR-001**: Architecture Style - Microservices
+- **ADR-002**: Communication - REST, gRPC, Kafka
+- **ADR-003**: Driver Location - Redis Geo vs DynamoDB
+- **ADR-004**: Authentication - Gateway vs Per-Service JWT
+- **ADR-005**: Trip Read Path - Cache Redis, CQRS
+- **ADR-006**: Driver Stream - Sharding by Region
+- **ADR-007**: Database Choice - PostgreSQL vs MongoDB
+- **ADR-008**: Message Queue - Kafka vs RabbitMQ
+- **ADR-009**: Caching Strategy - Redis vs Memcached
+- **ADR-010**: API Gateway Pattern
+- **ADR-011**: Container Orchestration - Docker Compose
+- **ADR-012**: Error Handling and Retry Strategy
+- **ADR-013**: Monitoring and Observability Strategy
+- **ADR-014**: Data Consistency - Eventual Consistency
+- **ADR-015**: Testing Strategy - Unit, Integration, Load Testing
+- **ADR-016**: Security - JWT vs OAuth2
+- **ADR-017**: Rate Limiting Strategy
+- **ADR-018**: Deployment Strategy - Blue-Green vs Rolling
+
+Mỗi ADR theo format chuẩn: Title, Status, Date, Context, Decision, Consequences.
+
+## 4. Cách bắt đầu đọc & chạy hệ thống
+
+### Bước 1: Đọc tài liệu kiến trúc
+
+Để hiểu tổng quan về hệ thống, hãy đọc theo thứ tự:
+
+1. **README này** - Entry point, tổng quan về các components
+2. **[`ARCHITECTURE.md`](./ARCHITECTURE.md)** - Kiến trúc chi tiết, technology stack, data flow
+3. **[`REPORT.md`](./REPORT.md)** - Báo cáo chuyên sâu Module A, challenges, results
+4. **[`ADR/`](./ADR/)** - Các quyết định thiết kế (đọc theo thứ tự ADR-001 → ADR-018)
+
+### Bước 2: Clone các service repositories
+
+Sau khi hiểu kiến trúc, clone các service repositories cần thiết:
+
+```bash
+# Clone các service chính
+git clone <repo-url>/gateway-service
+git clone <repo-url>/auth-service
+git clone <repo-url>/user-service
+git clone <repo-url>/trip-service
+git clone <repo-url>/driver-stream
+
+# Clone infrastructure
+git clone <repo-url>/infra
+git clone <repo-url>/proto
 ```
-UITGo/
-├── gateway-service/          # API Gateway
-├── auth-service/             # Authentication service
-├── user-service/             # User profile service
-├── trip-service/
-│   ├── trip-command-service/ # Trip write service (CQRS)
-│   └── trip-query-service/   # Trip read service (CQRS)
-├── driver-stream/            # Driver location & status service
-└── infra/                    # Docker Compose & k6 scripts
-```
 
-### Bước 2: Chạy Docker Compose
+Hoặc nếu tất cả services nằm trong cùng một monorepo, chỉ cần clone repo chính.
 
-Từ thư mục root, di chuyển vào thư mục `infra` và chạy:
+### Bước 3: Chạy hệ thống local với Docker Compose
+
+Để demo hệ thống local, vào repo [`infra`](../infra) và chạy:
 
 ```bash
 cd infra
 docker compose up
 ```
 
-Lệnh này sẽ khởi động các service sau:
+Lệnh này sẽ khởi động:
+- **Infrastructure**: PostgreSQL, MongoDB, Redis, Kafka, OSRM
+- **Services**: gateway-service, auth-service, user-service, trip-command-service, trip-query-service, driver-stream-hcm, driver-stream-hn
 
-**Infrastructure:**
-- PostgreSQL (port 5432): Database cho trip data
-- MongoDB (port 27017): Database cho user data
-- Redis (port 6379): Redis Geo + cache
-- Kafka + Zookeeper (ports 9092, 29092): Message broker
-- OSRM (port 5000): Routing engine
-
-**Application Services:**
-- gateway-service (port 3004): API Gateway
-- auth-service (port 3000): Authentication
-- user-service (port 3001): User profile
-- trip-command-service (port 3002): Trip write operations
-- trip-query-service (port 3003): Trip read operations
-- driver-stream-hcm (port 8081): Driver stream cho HCM region
-- driver-stream-hn (port 8082): Driver stream cho HN region
-
-### Bước 3: Kiểm tra health
-
-Kiểm tra các service đã khởi động thành công:
+Sau khi các service đã start, kiểm tra health:
 
 ```bash
-# Kiểm tra containers đang chạy
-docker ps
-
-# Kiểm tra gateway health
+# Gateway
 curl http://localhost:3004/healthz
 
-# Kiểm tra trip-command-service
+# Trip Command
 curl http://localhost:3002/healthz
 
-# Kiểm tra trip-query-service
+# Trip Query
 curl http://localhost:3003/healthz
-
-# Xem logs của một service
-docker logs <container-name>
-# Ví dụ: docker logs driver-stream-hcm
 ```
+
+Xem hướng dẫn chi tiết trong [`infra/README.md`](../infra/README.md).
 
 ### Bước 4: Test API
 
@@ -100,9 +151,7 @@ curl -X POST http://localhost:3004/api/v1/sessions \
   }'
 ```
 
-Lưu token từ response để dùng cho các request sau.
-
-**2. Tạo trip (POST /api/v1/trips):**
+**2. Tạo trip:**
 
 ```bash
 curl -X POST http://localhost:3004/api/v1/trips \
@@ -116,34 +165,18 @@ curl -X POST http://localhost:3004/api/v1/trips \
   }'
 ```
 
-Response sẽ chứa `tripId` và `tracking.sse` endpoint để theo dõi events.
-
-**3. Cập nhật vị trí tài xế (PUT /api/v1/drivers/:id/location):**
-
-```bash
-curl -X PUT http://localhost:3004/api/v1/drivers/driver-001/location \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <YOUR_JWT_TOKEN>" \
-  -d '{
-    "lat": 10.8231,
-    "lng": 106.6297,
-    "speed": 45,
-    "heading": 90
-  }'
-```
-
-**4. Lấy thông tin trip (GET /api/v1/trips/:id):**
+**3. Lấy thông tin trip (sử dụng Redis cache):**
 
 ```bash
 curl -X GET http://localhost:3004/api/v1/trips/<tripId> \
   -H "Authorization: Bearer <YOUR_JWT_TOKEN>"
 ```
 
-Request này sẽ được route đến `trip-query-service` và sử dụng Redis cache nếu có.
+Xem thêm examples trong README của từng service.
 
-## Load Testing với k6
+### Load Testing với k6
 
-Các script k6 nằm trong thư mục `infra/k6/`:
+Các script k6 nằm trong [`infra/k6/`](../infra/k6/):
 
 - `trips_create.js`: Test latency của create trip flow
 - `drivers_update_location.js`: Test throughput của location updates
@@ -156,41 +189,48 @@ cd infra/k6
 k6 run trips_create.js
 ```
 
-Xem thêm hướng dẫn trong `infra/k6/README.md`.
+## 5. Yêu cầu môi trường
 
-## Gợi ý deploy trên AWS
+- **Node.js**: >= 20.x
+- **Go**: >= 1.22
+- **Docker**: >= 20.x
+- **Docker Compose**: >= 2.x
+- **k6**: >= 0.47.0 (để chạy load test)
 
-**Lưu ý:** Phần này chỉ là định hướng, chưa được triển khai trong Module A.
+## 6. Cấu trúc repository
 
-Để deploy UITGo lên production trên AWS, có thể sử dụng:
+```
+UITGo/
+├── architecture/          # Repo này - tài liệu kiến trúc
+│   ├── README.md          # Entry point (file này)
+│   ├── ARCHITECTURE.md    # Kiến trúc chi tiết
+│   ├── REPORT.md          # Báo cáo Module A
+│   └── ADR/               # Architectural Decision Records
+├── gateway-service/        # API Gateway
+├── auth-service/          # Authentication service
+├── user-service/          # User profile service
+├── trip-service/
+│   ├── trip-command-service/  # Trip write (CQRS)
+│   └── trip-query-service/    # Trip read (CQRS + cache)
+├── driver-stream/         # Driver location & status
+├── infra/                 # Docker Compose, k6
+├── proto/                 # gRPC proto files
+└── iac/                   # Infrastructure as Code (Terraform)
+```
 
-- **Compute**: Amazon ECS (Fargate) hoặc Amazon EKS để chạy containers
-- **Database**: 
-  - Amazon RDS PostgreSQL cho trip data (có thể tách read replica cho trip-query-service)
-  - Amazon DocumentDB cho MongoDB (user data)
-  - Amazon ElastiCache Redis cho Redis Geo và cache
-- **Message Broker**: Amazon MSK (Managed Streaming for Apache Kafka)
-- **API Gateway**: AWS API Gateway hoặc Application Load Balancer
-- **Routing**: Có thể sử dụng AWS Location Service thay cho OSRM
-- **Monitoring**: Amazon CloudWatch, AWS X-Ray cho observability
+## 7. Liên kết nhanh
 
-Các service có thể được deploy vào nhiều Availability Zones để đảm bảo high availability. Driver-stream sharding có thể được mở rộng thành multi-region deployment (ví dụ: ap-southeast-1a cho HCM, ap-southeast-1b cho HN).
+- **Kiến trúc**: [`ARCHITECTURE.md`](./ARCHITECTURE.md)
+- **Báo cáo**: [`REPORT.md`](./REPORT.md)
+- **ADRs**: [`ADR/`](./ADR/)
+- **Infrastructure**: [`infra/README.md`](../infra/README.md)
+- **Gateway Service**: [`gateway-service/README.md`](../gateway-service/README.md)
+- **Auth Service**: [`auth-service/README.md`](../auth-service/README.md)
+- **User Service**: [`user-service/README.md`](../user-service/README.md)
+- **Trip Command**: [`trip-service/trip-command-service/README.md`](../trip-service/trip-command-service/README.md)
+- **Trip Query**: [`trip-service/trip-query-service/README.md`](../trip-service/trip-query-service/README.md)
+- **Driver Stream**: [`driver-stream/README.md`](../driver-stream/README.md)
 
-## Cấu trúc repository
+---
 
-- `gateway-service/`: API Gateway với JWT authentication
-- `auth-service/`: Authentication service tích hợp AWS Cognito
-- `user-service/`: User profile service (MongoDB + gRPC)
-- `trip-service/trip-command-service/`: Trip write service (CQRS)
-- `trip-service/trip-query-service/`: Trip read service (CQRS + Redis cache)
-- `driver-stream/`: Driver location & status service (Go + Redis Geo + Kafka)
-- `infra/`: Docker Compose configuration và k6 load test scripts
-- `proto/`: gRPC proto files
-- `ADR/`: Architectural Decision Records
-
-## Tài liệu tham khảo
-
-- `ARCHITECTURE.md`: Mô tả chi tiết kiến trúc hệ thống
-- `REPORT.md`: Báo cáo chuyên sâu về Module A
-- `ADR/`: Các quyết định thiết kế kiến trúc
-
+**Lưu ý**: Khi nộp bài, chỉ cần cung cấp link repo `architecture` này. Các service còn lại đã được liệt kê và link trong README này.

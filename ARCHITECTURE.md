@@ -1,8 +1,11 @@
-# Kiến trúc Hệ thống UITGo
+# UITGo – System Architecture Overview
+
+UITGo là một hệ thống đặt xe thời gian thực (real-time ride-hailing platform), được thiết kế dựa trên kiến trúc **microservices** nhằm đáp ứng ba mục tiêu cốt lõi: **khả năng mở rộng (scalability)**, **độ trễ thấp (low latency)** và **tính tách biệt domain (domain isolation)**.
+Mỗi service được triển khai như một bounded context độc lập, vừa tối ưu cho từng chức năng, vừa duy trì sự linh hoạt khi mở rộng trong tương lai.
 
 ## 1. Tổng quan kiến trúc hệ thống
 
-UITGo được xây dựng theo kiến trúc **microservices**, trong đó mỗi service quản lý một bounded context riêng biệt và có thể được scale độc lập.
+Trung tâm của toàn bộ hệ thống là một **API Gateway** – cổng vào hợp nhất cho toàn bộ traffic từ client apps (mobile/web). Gateway xử lý xác thực JWT, chuẩn hóa metadata của request (như `X-User-Id`, `X-User-Role`), sau đó định tuyến đến microservice tương ứng.
 
 ### Luồng request tổng quát
 
@@ -18,18 +21,108 @@ API Gateway (gateway-service:3004)
     └──→ driver-stream (ports 8081/8082) - Driver location/status (Redis Geo + Kafka)
 ```
 
-### Các thành phần hạ tầng
+### Sơ đồ kiến trúc tổng quan
+```mermaid
+%%{init: { "theme": "dark", "flowchart": { "curve": "monotone" }, "layout": "elk" }}%%
+flowchart TB
 
-- **PostgreSQL** (port 5432): Database chính cho trip data, được tách biệt giữa command (PRIMARY_DB_URL) và query (READ_DB_URL) theo CQRS
-- **MongoDB** (port 27017): Database cho user profile data
+    subgraph C["CLIENT LAYER"]
+        APP["📱 Mobile App\nPassenger/Driver"]
+        POSTMAN["🧪 Postman"]
+        K6["📈 k6 Load Testing"]
+    end
+
+    subgraph G["API GATEWAY / INGRESS"]
+        GW["🌐 API Gateway /api/v1\nJWT • Routing • Rate limit"]
+    end
+
+    subgraph AUTH["Auth Service"]
+        AUTH_API["🔐 Login • OTP • JWT"]
+    end
+
+    subgraph USER["User Service"]
+        USER_REST["👤 REST Users API"]
+        USER_GRPC["🔗 gRPC: GetProfile"]
+    end
+
+    subgraph TRIP["Trip Service (CQRS)"]
+        TRIP_CMD["📝 trip-command-service"]
+        TRIP_QUERY["📘 trip-query-service\n+ Redis Cache"]
+    end
+
+    subgraph DRIVER["Driver-stream (Sharded HCM/HN)"]
+        DRIVER_REST["🚗 REST: location/nearby"]
+        DRIVER_GRPC["🛰️ gRPC: Nearby/Assign"]
+        DRIVER_SSE["📡 SSE: trip_offer"]
+    end
+
+    subgraph S["MICROSERVICE LAYER"]
+        AUTH
+        USER
+        TRIP
+        DRIVER
+    end
+
+    subgraph D["DATA LAYER"]
+        PG_AUTH[("🗄️ Auth PostgreSQL")]
+        PG_USER[("🍃 MongoDB users-db")]
+        PG_TRIP[("🗄️ PostgreSQL trips-db")]
+        PG_DRIVER[("🗄️ PostgreSQL drivers-db")]
+        REDIS_GEO["🧭 Redis Geo"]
+        REDIS_CACHE["⚡ Redis Cache"]
+        KAFKA["🪩 Kafka Broker"]
+        DDB["⏱️ DynamoDB TTL"]
+        S3["🖼️ AWS S3"]
+    end
+
+    subgraph CICD["CI/CD – GitHub Actions"]
+        GH["🤖 GitHub Actions"]
+        DOCKER_BUILD["🐳 Docker Build"]
+        PUSH_ECR["📦 Push to ECR"]
+        DEPLOY["🚀 Deploy to EKS/ECS"]
+    end
+
+    subgraph INFRA["Infra & Orchestration"]
+        TF["🧱 Terraform IaC"]
+        DOCKER["🐳 Docker Compose"]
+        K8S["☸️ Kubernetes"]
+        AWS["☁️ AWS Cloud"]
+    end
+
+    C --> GW
+    GW --> AUTH_API & USER_REST & TRIP_CMD & TRIP_QUERY & DRIVER_REST
+    TRIP_QUERY --> REDIS_CACHE
+    AUTH_API --> PG_AUTH
+    USER_REST --> PG_USER & S3
+    TRIP_CMD --> PG_TRIP
+    DRIVER_REST --> REDIS_GEO
+    DRIVER_GRPC --> REDIS_GEO
+
+    DRIVER_REST -- Location Event --> KAFKA
+    KAFKA --> DDB
+
+    GH --> DOCKER_BUILD
+    DOCKER_BUILD --> PUSH_ECR --> DEPLOY --> AWS
+    TF --> AWS
+
+    DOCKER --- S & D
+```
+
+
+### 1.1 Hạ tầng cốt lõi
+
+UITGo kết hợp nhiều công nghệ chuyên biệt nhằm tối ưu latency và throughput:
+
+- **PostgreSQL** (port 5432): Database chính cho trip data, được tách biệt giữa command (PRIMARY_DB_URL) và query (READ_DB_URL) theo CQRS – đảm bảo consistency và transactional safety cho các thao tác trip write
+- **MongoDB** (port 27017): Database cho user profile data với schema linh hoạt
 - **Redis** (port 6379): 
-  - Redis Geo cho tìm tài xế gần nhất (driver-stream)
-  - Cache cho Trip data (trip-query-service)
-  - Assignment state management
+  - Redis Geo → query tài xế trong bán kính theo thời gian thực
+  - Redis Cache cho Trip data (trip-query-service) → tăng tốc trip reads
+  - Redis TTL-state → ephemeral assignment state
 - **Kafka** (ports 9092, 29092): Message broker cho event streaming (driver location updates)
 - **OSRM** (port 5000): Routing engine để tính toán khoảng cách và thời gian di chuyển
 
-### Các pattern đã áp dụng
+### 1.2 Các pattern đã áp dụng
 
 1. **Microservices Architecture**: Mỗi service độc lập, có thể deploy và scale riêng
 2. **Database-per-Service**: Mỗi service có database riêng (PostgreSQL cho trip, MongoDB cho user)
@@ -40,6 +133,8 @@ API Gateway (gateway-service:3004)
 7. **Sharding**: Driver-stream được shard theo region (HCM, HN)
 
 ## 2. Kiến trúc chi tiết Module A
+
+Module này thể hiện rõ nhất **“nhịp đập thời gian thực”** của UITGo – từ khoảnh khắc hành khách tạo chuyến đến lúc hệ thống tìm tài xế phù hợp.
 
 ### 2.1. Luồng đặt chuyến & tìm tài xế (Create Trip + Find Driver)
 
@@ -155,6 +250,11 @@ export const REGION_SHARD_CONFIG = {
 ```
 
 ### 4.2. Multi-container Deployment
+
+| Shard | Redis DB Index | Kafka Topic         | gRPC Port |
+|:-----:|:--------------:|:-------------------:|:---------:|
+|  HCM  |       0        | driver.location.hcm |   50052   |
+|  HN   |       1        | driver.location.hn  |   50053   |
 
 Docker Compose định nghĩa 2 services:
 

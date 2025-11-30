@@ -1,7 +1,7 @@
 # ADR-005: Trip Read Path - Redis Cache + CQRS
 
 **Status:** Accepted  
-**Date:** 2024
+**Date:** 2025
 
 ## Context
 

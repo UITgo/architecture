@@ -2,13 +2,13 @@
 
 ## 1. Giới thiệu UITGo
 
-UITGo là một hệ thống gọi xe được xây dựng theo kiến trúc **microservices**, hỗ trợ các chức năng đặt chuyến, tìm tài xế gần nhất, và quản lý trạng thái tài xế theo thời gian thực. Hệ thống được thiết kế để scale theo region (HCM, HN) và tối ưu cho cả read-heavy và write-heavy workloads.
+UITGo là một hệ thống gọi xe được phát triển dựa trên kiến trúc **microservices**, cung cấp các chức năng cốt lõi như đặt chuyến, tìm tài xế gần nhất, quản lý vị trí và trạng thái tài xế theo thời gian thực. Hệ thống được thiết kế để hỗ trợ **mở rộng theo từng khu vực địa lý (HCM, HN)** và tối ưu hóa cho cả **read-heavy workloads** (truy vấn dữ liệu) và **write-heavy workloads** (cập nhật vị trí tài xế).
 
-**Repo `architecture` này là "cửa chính" (entry point) của toàn bộ hệ thống UITGo.** Repo này chứa:
+**Repo `architecture` này đóng vai trò là "cửa chính" (entry point) của toàn bộ hệ thống UITGo.** Repo này chứa:
 - Tài liệu kiến trúc tổng thể (`ARCHITECTURE.md`)
 - Báo cáo chuyên sâu Module A (`REPORT.md`)
 - Architectural Decision Records (`ADR/`) - 18 quyết định thiết kế quan trọng
-- Bảng liệt kê và link tới tất cả các service/repo khác trong hệ thống
+- Bảng danh mục và liên kết đến tất cả các service/repo trong hệ thống
 
 ## 2. Kiến trúc tổng thể & danh sách service
 
@@ -20,7 +20,7 @@ UITGo sử dụng kiến trúc **microservices** với các pattern:
 - **Sharding**: Driver-stream được shard theo region (HCM, HN)
 - **Caching**: Redis cho read-heavy paths và Redis Geo cho spatial queries
 
-### Bảng liệt kê toàn bộ components
+### Danh sách toàn bộ thành phần trong hệ thống
 
 | Component | Repo / Folder | Technology / Description |
 |-----------|---------------|--------------------------|
@@ -85,7 +85,7 @@ Mỗi ADR theo format chuẩn: Title, Status, Date, Context, Decision, Consequen
 
 Để hiểu tổng quan về hệ thống, hãy đọc theo thứ tự:
 
-1. **README này** - Entry point, tổng quan về các components
+1. **README** - Entry point, tổng quan về các components
 2. **[`ARCHITECTURE.md`](./ARCHITECTURE.md)** - Kiến trúc chi tiết, technology stack, data flow
 3. **[`REPORT.md`](./REPORT.md)** - Báo cáo chuyên sâu Module A, challenges, results
 4. **[`ADR/`](./ADR/)** - Các quyết định thiết kế (đọc theo thứ tự ADR-001 → ADR-018)
@@ -111,7 +111,7 @@ Vì nhóm tổ chức multi-repo github.
 
 ### Bước 3: Chạy hệ thống local với Docker Compose
 
-Để demo hệ thống local, vào repo [`infra`](../infra) và chạy:
+Để demo hệ thống local, vào repo [`infra`](https://github.com/UITgo/infra) và chạy:
 
 ```bash
 cd infra
@@ -175,7 +175,7 @@ Xem thêm examples trong README của từng service.
 
 ### Load Testing với k6
 
-Các script k6 nằm trong [`infra/k6/`](../infra/k6/):
+Các script k6 nằm trong [`infra/k6/`](https://github.com/UITgo/infra/tree/main/k6):
 
 - `trips_create.js`: Test latency của create trip flow
 - `drivers_update_location.js`: Test throughput của location updates
@@ -222,13 +222,13 @@ UITGo/
 - **Kiến trúc**: [`ARCHITECTURE.md`](./ARCHITECTURE.md)
 - **Báo cáo**: [`REPORT.md`](./REPORT.md)
 - **ADRs**: [`ADR/`](./ADR/)
-- **Infrastructure**: [`infra/README.md`](../infra/README.md)
-- **Gateway Service**: [`gateway-service/README.md`](../gateway-service/README.md)
-- **Auth Service**: [`auth-service/README.md`](../auth-service/README.md)
-- **User Service**: [`user-service/README.md`](../user-service/README.md)
-- **Trip Command**: [`trip-service/trip-command-service/README.md`](../trip-service/trip-command-service/README.md)
-- **Trip Query**: [`trip-service/trip-query-service/README.md`](../trip-service/trip-query-service/README.md)
-- **Driver Stream**: [`driver-stream/README.md`](../driver-stream/README.md)
+- **Infrastructure**: [`infra/README.md`](https://github.com/UITgo/infra/blob/main/README.md)
+- **Gateway Service**: [`gateway-service/README.md`](https://github.com/UITgo/gateway-service/blob/main/README.md)
+- **Auth Service**: [`auth-service/README.md`](https://github.com/UITgo/auth-service/blob/main/README.md)
+- **User Service**: [`user-service/README.md`](https://github.com/UITgo/user-service/blob/main/README.md)
+- **Trip Command**: [`trip-service/trip-command-service/README.md`](https://github.com/UITgo/trip-service/blob/main/trip-command-service/README.md)
+- **Trip Query**: [`trip-service/trip-query-service/README.md`](https://github.com/UITgo/trip-service/blob/main/trip-query-service/README.md)
+- **Driver Stream**: [`driver-stream/README.md`](https://github.com/UITgo/driver-stream/blob/main/README.md)
 
 ---
 

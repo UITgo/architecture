@@ -198,7 +198,7 @@ Luồng này được thiết kế để xử lý high-throughput location updat
 - Create Trip: p95 <200ms với 30 VUs
 - Update Location: p95 <50ms với 50 VUs
 - Read Trip (với cache): p95 <100ms với 50 VUs
-- ![result](https://github.com/UITgo/architecture/blob/main/asset/result_k6.png)
+- ![result](https://github.com/UITgo/architecture/blob/main/asset/result.png)
 
 **Tối ưu đã implement:**
 - CQRS: Tách command và query, scale độc lập

@@ -1,7 +1,7 @@
 # ADR-002: Communication Patterns - REST + gRPC + Kafka
 
 **Status:** Accepted  
-**Date:** 2024
+**Date:** 2025
 
 ## Context
 

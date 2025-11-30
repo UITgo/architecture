@@ -246,3 +246,16 @@ Luồng này được thiết kế để xử lý high-throughput location updat
 - Sử dụng cache warming
 - Monitor cache hit rate
 
+
+## 6. Phân chia công việc
+
+**Leader: Phạm Thị Kiều Diễm**
+
+| STT | Hạng mục công việc                                                                                   | Phụ trách |
+|-----|------------------------------------------------------------------------------------------------------|----------|
+| 1   | Triển khai ECS lên AWS, cấu hình CI/CD, hoàn thành user-service, auth-service                                                                                                 | Thy      |
+| 2   | Code và Gọi API từ FE tới các service driver-service, trip-service                                                                                                 | Hân      |
+| 3   | Code module chuyên sâu A và các serivces   `api-gateway`, `infra`                                    | Diễm     |
+| 4   | Kiểm chứng (testing, verify) module chuyên sâu                                                       | Diễm     |
+| 5   | Tối ưu module chuyên sâu theo kết quả kiểm chứng                                                     | Diễm     |
+| 6   | Hoàn thành tài liệu báo cáo và cập nhật GitHub                                                       | Hân      |

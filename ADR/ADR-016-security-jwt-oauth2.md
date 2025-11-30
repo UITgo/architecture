@@ -1,7 +1,7 @@
 # ADR-016: Security - JWT vs OAuth2
 
 **Status:** Accepted  
-**Date:** 2024
+**Date:** 2025
 
 ## Context
 

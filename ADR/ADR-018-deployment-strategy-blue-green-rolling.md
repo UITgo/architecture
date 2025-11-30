@@ -1,7 +1,7 @@
 # ADR-018: Deployment Strategy - Blue-Green vs Rolling
 
 **Status:** Accepted  
-**Date:** 2024
+**Date:** 2025
 
 ## Context
 

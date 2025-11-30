@@ -1,7 +1,7 @@
 # ADR-015: Testing Strategy - Unit, Integration, Load Testing
 
 **Status:** Accepted  
-**Date:** 2024
+**Date:** 2025
 
 ## Context
 

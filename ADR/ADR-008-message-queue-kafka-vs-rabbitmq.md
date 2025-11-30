@@ -1,7 +1,7 @@
 # ADR-008: Message Queue - Kafka vs RabbitMQ
 
 **Status:** Accepted  
-**Date:** 2024
+**Date:** 2025
 
 ## Context
 

@@ -1,7 +1,7 @@
 # ADR-007: Database Choice - PostgreSQL vs MongoDB
 
 **Status:** Accepted  
-**Date:** 2024
+**Date:** 2025
 
 ## Context
 

@@ -1,7 +1,7 @@
 # ADR-011: Container Orchestration - Docker Compose
 
 **Status:** Accepted  
-**Date:** 2024
+**Date:** 2025
 
 ## Context
 

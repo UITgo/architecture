@@ -1,7 +1,7 @@
 # ADR-010: API Gateway Pattern
 
 **Status:** Accepted  
-**Date:** 2024
+**Date:** 2025
 
 ## Context
 

@@ -1,7 +1,7 @@
 # ADR-003: Driver Location Storage - Redis Geo vs DynamoDB
 
 **Status:** Accepted  
-**Date:** 2024
+**Date:** 2025
 
 ## Context
 

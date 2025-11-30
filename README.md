@@ -10,8 +10,6 @@ UITGo là một hệ thống gọi xe được xây dựng theo kiến trúc **m
 - Architectural Decision Records (`ADR/`) - 18 quyết định thiết kế quan trọng
 - Bảng liệt kê và link tới tất cả các service/repo khác trong hệ thống
 
-Khi nộp bài, chỉ cần cung cấp link repo `architecture` này; các service còn lại đã được liệt kê và link trong README này.
-
 ## 2. Kiến trúc tổng thể & danh sách service
 
 UITGo sử dụng kiến trúc **microservices** với các pattern:
@@ -34,9 +32,9 @@ UITGo sử dụng kiến trúc **microservices** với các pattern:
 | **Driver Stream** | [`driver-stream`](../driver-stream) | Go + Redis Geo + Kafka, driver location & status, trip assignment |
 | **Infrastructure** | [`infra`](../infra) | Docker Compose, k6 load testing scripts, infrastructure configs |
 | **Proto Contracts** | [`proto`](../proto) | gRPC/Protobuf definitions cho inter-service communication |
-| **IaC** | [`iac`](../iac) | Terraform/Bicep cho AWS infrastructure (nếu có) |
-| **Frontend User** | `fe-user` | Frontend cho passenger app (nếu có) |
-| **Frontend Driver** | `fe-driver` | Frontend cho driver app (nếu có) |
+| **IaC** | [`iac`](../iac) | Terraform/Bicep cho AWS infrastructure |
+| **Frontend User** | `fe-user` | Frontend cho passenger app  |
+| **Frontend Driver** | `fe-driver` | Frontend cho driver app  |
 | **Architecture Docs** | `architecture` (repo này) | Tài liệu: README, ARCHITECTURE.md, REPORT.md, ADR/ |
 
 ## 3. Tài liệu kiến trúc & báo cáo
@@ -97,18 +95,18 @@ Sau khi hiểu kiến trúc, clone các service repositories cần thiết:
 
 ```bash
 # Clone các service chính
-git clone <repo-url>/gateway-service
-git clone <repo-url>/auth-service
-git clone <repo-url>/user-service
-git clone <repo-url>/trip-service
-git clone <repo-url>/driver-stream
+git clone https://github.com/UITgo/gateway-service
+git clone https://github.com/UITgo/auth-service
+git clone https://github.com/UITgo/user-service
+git clone https://github.com/UITgo/trip-service
+git clone https://github.com/UITgo/driver-stream
 
 # Clone infrastructure
-git clone <repo-url>/infra
-git clone <repo-url>/proto
+git clone https://github.com/UITgo/infra
+git clone https://github.com/UITgo/proto
 ```
 
-Hoặc nếu tất cả services nằm trong cùng một monorepo, chỉ cần clone repo chính.
+Vì nhóm tổ chức multi-repo github.
 
 ### Bước 3: Chạy hệ thống local với Docker Compose
 
@@ -204,7 +202,7 @@ UITGo/
 ├── architecture/          # Repo này - tài liệu kiến trúc
 │   ├── README.md          # Entry point (file này)
 │   ├── ARCHITECTURE.md    # Kiến trúc chi tiết
-│   ├── REPORT.md          # Báo cáo Module A
+│   ├── REPORT.md          # Báo cáo cuôi kỳ
 │   └── ADR/               # Architectural Decision Records
 ├── gateway-service/        # API Gateway
 ├── auth-service/          # Authentication service
@@ -233,4 +231,4 @@ UITGo/
 
 ---
 
-**Lưu ý**: Khi nộp bài, chỉ cần cung cấp link repo `architecture` này. Các service còn lại đã được liệt kê và link trong README này.
+

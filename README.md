@@ -24,18 +24,19 @@ UITGo sử dụng kiến trúc **microservices** với các pattern:
 
 | Component | Repo / Folder | Technology / Description |
 |-----------|---------------|--------------------------|
-| **API Gateway** | [`gateway-service`](https://github.com/UITgo/gateway-service) | NestJS, expose `/api/v1/*`, JWT authentication, request routing |
-| **Auth Service** | [`auth-service`](../auth-service) | NestJS, AWS Cognito integration, JWT token generation |
-| **User Service** | [`user-service`](../user-service) | NestJS + MongoDB, user profile management, gRPC service |
-| **Trip Command** | [`trip-service/trip-command-service`](../trip-service/trip-command-service) | NestJS + PostgreSQL, CQRS write side, region sharding |
-| **Trip Query** | [`trip-service/trip-query-service`](../trip-service/trip-query-service) | NestJS + PostgreSQL + Redis, CQRS read side, caching |
-| **Driver Stream** | [`driver-stream`](../driver-stream) | Go + Redis Geo + Kafka, driver location & status, trip assignment |
-| **Infrastructure** | [`infra`](../infra) | Docker Compose, k6 load testing scripts, infrastructure configs |
-| **Proto Contracts** | [`proto`](../proto) | gRPC/Protobuf definitions cho inter-service communication |
-| **IaC** | [`iac`](../iac) | Terraform/Bicep cho AWS infrastructure |
-| **Frontend User** | `fe-user` | Frontend cho passenger app  |
-| **Frontend Driver** | `fe-driver` | Frontend cho driver app  |
-| **Architecture Docs** | `architecture` (repo này) | Tài liệu: README, ARCHITECTURE.md, REPORT.md, ADR/ |
+| **API Gateway**      | [`gateway-service`](https://github.com/UITgo/gateway-service)                     | NestJS, expose `/api/v1/*`, JWT authentication, request routing |
+| **Auth Service**     | [`auth-service`](https://github.com/UITgo/auth-service)                           | NestJS, AWS Cognito integration, JWT token generation |
+| **User Service**     | [`user-service`](https://github.com/UITgo/user-service)                           | NestJS + MongoDB, user profile management, gRPC service |
+| **Trip Command**     | [`trip-command-service`](https://github.com/UITgo/trip-service/tree/main/trip-command-service) | NestJS + PostgreSQL, CQRS write side, region sharding |
+| **Trip Query**       | [`trip-query-service`](https://github.com/UITgo/trip-service/tree/main/trip-query-service)     | NestJS + PostgreSQL + Redis, CQRS read side, caching |
+| **Driver Stream**    | [`driver-stream`](https://github.com/UITgo/driver-stream)                         | Go + Redis Geo + Kafka, driver location & status, trip assignment |
+| **Infrastructure**   | [`infra`](https://github.com/UITgo/infra)                                         | Docker Compose, k6 load testing scripts, infrastructure configs |
+| **Proto Contracts**  | [`proto`](https://github.com/UITgo/proto)                                         | gRPC/Protobuf definitions cho inter-service communication |
+| **IaC**              | [`iac`](https://github.com/UITgo/iac)                                             | Terraform/Bicep cho AWS infrastructure |
+| **Frontend User**    | [`fe-user`](https://github.com/UITgo/fe-user)                                     | Frontend cho passenger app |
+| **Frontend Driver**  | [`fe-driver`](https://github.com/UITgo/fe-driver)                                 | Frontend cho driver app |
+| **Architecture Docs**| [`architecture`](https://github.com/UITgo/architecture)                           | Tài liệu: README, ARCHITECTURE.md, REPORT.md, ADR/ |
+
 
 ## 3. Tài liệu kiến trúc & báo cáo
 

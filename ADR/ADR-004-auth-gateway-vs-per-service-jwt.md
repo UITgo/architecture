@@ -1,7 +1,7 @@
 # ADR-004: Authentication - Gateway-level JWT vs Per-Service JWT
 
 **Status:** Accepted  
-**Date:** 2024
+**Date:** 2025
 
 ## Context
 

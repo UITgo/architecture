@@ -1,7 +1,7 @@
 # ADR-006: Driver Stream Sharding by Region
 
 **Status:** Accepted  
-**Date:** 2024
+**Date:** 2025
 
 ## Context
 

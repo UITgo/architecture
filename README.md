@@ -24,7 +24,7 @@ UITGo sử dụng kiến trúc **microservices** với các pattern:
 
 | Component | Repo / Folder | Technology / Description |
 |-----------|---------------|--------------------------|
-| **API Gateway** | [`gateway-service`](../gateway-service) | NestJS, expose `/api/v1/*`, JWT authentication, request routing |
+| **API Gateway** | [`gateway-service`]([../gateway-service](https://github.com/UITgo/gateway-service)) | NestJS, expose `/api/v1/*`, JWT authentication, request routing |
 | **Auth Service** | [`auth-service`](../auth-service) | NestJS, AWS Cognito integration, JWT token generation |
 | **User Service** | [`user-service`](../user-service) | NestJS + MongoDB, user profile management, gRPC service |
 | **Trip Command** | [`trip-service/trip-command-service`](../trip-service/trip-command-service) | NestJS + PostgreSQL, CQRS write side, region sharding |

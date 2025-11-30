@@ -996,5 +996,4 @@ k6 run --env TOKEN=<token> --env TRIP_ID=<trip_id> trips_read_cached_after.js
 
 ---
 
-**Chúc bạn quay video thành công! 🎬**
 

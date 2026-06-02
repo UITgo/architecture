@@ -10,7 +10,6 @@
 Cloud-Native Ride-Hailing Platform built with Microservices, CQRS, Kafka, Redis Geo, and Distributed Systems Principles
 </p>
 
-# UITGo - Hệ thống Gọi Xe
 <p align="center">
 
 ![Architecture](https://img.shields.io/badge/Architecture-Microservices-blue)
@@ -56,8 +55,6 @@ UITGo là một hệ thống gọi xe được phát triển dựa trên kiến 
   <img src="docs/system-architecture.png" width="95%">
 </p>
 
-## 2. Kiến trúc tổng thể & danh sách service
-
 UITGo sử dụng kiến trúc **microservices** với các pattern:
 - **API Gateway Pattern**: Single entry point cho tất cả clients
 - **Database-per-Service**: Mỗi service có database riêng (PostgreSQL, MongoDB)
@@ -78,7 +75,6 @@ UITGo sử dụng kiến trúc **microservices** với các pattern:
 | Observability | Logging, Metrics |
 | Testing | k6 |
 
-### Danh sách toàn bộ thành phần trong hệ thống
 ## 🧩 Service Landscape
 
 | Component | Repo / Folder | Technology / Description |
@@ -95,7 +91,6 @@ UITGo sử dụng kiến trúc **microservices** với các pattern:
 | **Frontend User**    | [`fe-user`](https://github.com/UITgo/fe-user)                                     | Frontend cho passenger app |
 | **Frontend Driver**  | [`fe-driver`](https://github.com/UITgo/fe-driver)                                 | Frontend cho driver app |
 | **Architecture Docs**| [`architecture`](https://github.com/UITgo/architecture)                           | Tài liệu: README, ARCHITECTURE.md, REPORT.md, ADR/ |
-
 
 ## 3. Tài liệu kiến trúc & báo cáo
 

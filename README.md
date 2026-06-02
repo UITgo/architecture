@@ -1,5 +1,45 @@
-# UITGo - Hệ thống Gọi Xe
+<p align="center">
+  <img src="docs/banner.png" width="100%">
+</p>
 
+<h1 align="center">
+🚖 UITGo
+</h1>
+
+<p align="center">
+Cloud-Native Ride-Hailing Platform built with Microservices, CQRS, Kafka, Redis Geo, and Distributed Systems Principles
+</p>
+
+# UITGo - Hệ thống Gọi Xe
+<p align="center">
+
+![Architecture](https://img.shields.io/badge/Architecture-Microservices-blue)
+
+![CQRS](https://img.shields.io/badge/Pattern-CQRS-green)
+
+![Kafka](https://img.shields.io/badge/Event%20Streaming-Kafka-black)
+
+![Redis](https://img.shields.io/badge/Redis-Geo-red)
+
+![gRPC](https://img.shields.io/badge/Communication-gRPC-success)
+
+![Docker](https://img.shields.io/badge/Deployment-Docker-blue)
+
+![Load%20Testing](https://img.shields.io/badge/Testing-k6-orange)
+
+</p>
+
+## ✨ System Highlights
+
+- 🚖 Real-time Ride Matching
+- ⚡ Kafka Event Streaming
+- 🌍 Regional Sharding (HCM / HN)
+- 📦 CQRS Architecture
+- 📍 Redis Geo Spatial Queries
+- 🔐 JWT Authentication
+- 🚀 Dockerized Infrastructure
+- 📊 Load Tested with k6
+  
 ## 1. Giới thiệu UITGo
 
 UITGo là một hệ thống gọi xe được phát triển dựa trên kiến trúc **microservices**, cung cấp các chức năng cốt lõi như đặt chuyến, tìm tài xế gần nhất, quản lý vị trí và trạng thái tài xế theo thời gian thực. Hệ thống được thiết kế để hỗ trợ **mở rộng theo từng khu vực địa lý (HCM, HN)** và tối ưu hóa cho cả **read-heavy workloads** (truy vấn dữ liệu) và **write-heavy workloads** (cập nhật vị trí tài xế).
@@ -9,6 +49,12 @@ UITGo là một hệ thống gọi xe được phát triển dựa trên kiến 
 - Báo cáo chuyên sâu Module A (`REPORT.md`)
 - Architectural Decision Records (`ADR/`) - 18 quyết định thiết kế quan trọng
 - Bảng danh mục và liên kết đến tất cả các service/repo trong hệ thống
+
+## 🏗 System Architecture
+
+<p align="center">
+  <img src="docs/system-architecture.png" width="95%">
+</p>
 
 ## 2. Kiến trúc tổng thể & danh sách service
 
@@ -20,7 +66,20 @@ UITGo sử dụng kiến trúc **microservices** với các pattern:
 - **Sharding**: Driver-stream được shard theo region (HCM, HN)
 - **Caching**: Redis cho read-heavy paths và Redis Geo cho spatial queries
 
+## 🛠 Technology Stack
+
+| Layer | Technologies |
+|---------|---------|
+| Backend | NestJS, Go |
+| Communication | REST, gRPC, Kafka |
+| Database | PostgreSQL, MongoDB |
+| Caching | Redis, Redis Geo |
+| Infrastructure | Docker Compose |
+| Observability | Logging, Metrics |
+| Testing | k6 |
+
 ### Danh sách toàn bộ thành phần trong hệ thống
+## 🧩 Service Landscape
 
 | Component | Repo / Folder | Technology / Description |
 |-----------|---------------|--------------------------|

@@ -1,32 +1,24 @@
-<p align="center">
-  <img src="docs/banner.png" width="100%">
-</p>
-
 <h1 align="center">
 🚖 UITGo
 </h1>
 
 <p align="center">
-Cloud-Native Ride-Hailing Platform built with Microservices, CQRS, Kafka, Redis Geo, and Distributed Systems Principles
+Cloud-Native Ride-Hailing Platform built with Microservices, CQRS, Kafka, Redis Geo, and Event-Driven Architecture
 </p>
 
 <p align="center">
 
 ![Architecture](https://img.shields.io/badge/Architecture-Microservices-blue)
-
-![CQRS](https://img.shields.io/badge/Pattern-CQRS-green)
-
-![Kafka](https://img.shields.io/badge/Event%20Streaming-Kafka-black)
-
+![Pattern](https://img.shields.io/badge/Pattern-CQRS-green)
+![Streaming](https://img.shields.io/badge/Event%20Streaming-Kafka-black)
 ![Redis](https://img.shields.io/badge/Redis-Geo-red)
-
-![gRPC](https://img.shields.io/badge/Communication-gRPC-success)
-
-![Docker](https://img.shields.io/badge/Deployment-Docker-blue)
-
-![Load%20Testing](https://img.shields.io/badge/Testing-k6-orange)
+![Communication](https://img.shields.io/badge/Communication-gRPC-success)
+![Deployment](https://img.shields.io/badge/Deployment-Docker-blue)
+![Testing](https://img.shields.io/badge/Load%20Testing-k6-orange)
 
 </p>
+
+---
 
 ## ✨ System Highlights
 

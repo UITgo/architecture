@@ -42,11 +42,6 @@ UITGo là một hệ thống gọi xe được phát triển dựa trên kiến 
 - Bảng danh mục và liên kết đến tất cả các service/repo trong hệ thống
 
 ## 🏗 System Architecture
-
-<p align="center">
-  <img src="docs/system-architecture.png" width="95%">
-</p>
-
 UITGo sử dụng kiến trúc **microservices** với các pattern:
 - **API Gateway Pattern**: Single entry point cho tất cả clients
 - **Database-per-Service**: Mỗi service có database riêng (PostgreSQL, MongoDB)
